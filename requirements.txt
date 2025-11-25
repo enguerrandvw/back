@@ -4,3 +4,4 @@ pandas
 xgboost
 pydantic
 scikit-learn
+psycopg2-binary
