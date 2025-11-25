@@ -9,8 +9,9 @@ import json
 app = FastAPI()
 
 origins = [
+    "https://h59xlh-5173.csb.app/",
     "*", 
-    https://h59xlh-5173.csb.app/# Mettez ici l'URL exacte de votre site React en production
+    # Mettez ici l'URL exacte de votre site React en production
 ]
 
 app.add_middleware(
@@ -99,4 +100,5 @@ def predict_sales(data: RestaurantInput):
         "fries_sold": int(result[4])
 
     }
+
 
