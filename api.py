@@ -16,7 +16,7 @@ DB_CONFIG = {
     "host": "vqwsatrwtrvarumewxbw.supabase.co", 
     "database": "postgres",
     "user": "postgres",
-    "password": "VOTRE_MOT_DE_PASSE_DB_A_REMPLACER" 
+    "password": "eesfwvDXC2007!" 
 }
 
 # --- 2. CONFIGURATION CORS ---
@@ -156,3 +156,4 @@ def log_daily_data(data: LogDataInput, user_id: str = Header(..., alias="X-User-
         raise HTTPException(status_code=500, detail=f"Erreur de Base de Données. Vérifiez le mot de passe DB et la table 'predictions': {e}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur Interne du Serveur: {e}")
+
