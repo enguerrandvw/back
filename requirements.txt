@@ -1,7 +1,6 @@
-fastapi 
-uvicorn 
-xgboost 
-pandas 
-scikit-learn 
-fastapi.middleware.cors
+fastapi
+uvicorn
+pandas
+xgboost
 pydantic
+scikit-learn
