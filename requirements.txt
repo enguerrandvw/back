@@ -3,4 +3,5 @@ uvicorn
 xgboost 
 pandas 
 scikit-learn 
+fastapi.middleware.cors
 pydantic
