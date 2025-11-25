@@ -8,6 +8,19 @@ import json
 
 app = FastAPI()
 
+origins = [
+    "*", 
+    https://h59xlh-5173.csb.app/# Mettez ici l'URL exacte de votre site React en production
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"], # Ceci autorise la méthode OPTIONS
+    allow_headers=["*"],
+)
+
 # 1. Charger le modèle au démarrage
 model = XGBRegressor()
 model.load_model("restaurant_model.json")
@@ -86,3 +99,4 @@ def predict_sales(data: RestaurantInput):
         "fries_sold": int(result[4])
 
     }
+
