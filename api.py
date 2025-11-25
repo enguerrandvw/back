@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import pandas as pd
 from xgboost import XGBRegressor
+from fastapi.middleware.cors import CORSMiddleware
 import json
 
 app = FastAPI()
@@ -83,4 +84,5 @@ def predict_sales(data: RestaurantInput):
         "chicken_sold": int(result[2]),
         "salad_sold": int(result[3]),
         "fries_sold": int(result[4])
+
     }
