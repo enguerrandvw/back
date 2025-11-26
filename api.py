@@ -21,7 +21,7 @@ DB_CONFIG = {
 
 # --- 2. CONFIGURATION CORS ---
 origins = [
-    "https://h59xlh-5173.csb.app", 
+    "https://site-glowup.vercel.app/", 
     "*", 
 ]
 
@@ -156,4 +156,5 @@ def log_daily_data(data: LogDataInput, user_id: str = Header(..., alias="X-User-
         raise HTTPException(status_code=500, detail=f"Erreur de Base de Données. Vérifiez le mot de passe DB et la table 'predictions': {e}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur Interne du Serveur: {e}")
+
 
