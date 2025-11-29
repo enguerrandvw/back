@@ -1,5 +1,5 @@
 # api.py
-from fastapi import FastAPI, Header, HTTPException
+from fastapi import FastAPI, Header, HTTPException, Depends
 from pydantic import BaseModel
 import pandas as pd
 from xgboost import XGBRegressor
@@ -7,6 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import json
 from datetime import date 
 import psycopg2 
+# --- NOUVELLE IMPORTATION ---
+from auth import verify_user_is_authorized
 
 app = FastAPI()
 
@@ -35,6 +37,7 @@ app.add_middleware(
 
 # 3. Charger le modèle au démarrage
 model = XGBRegressor()
+# NOTE: Assurez-vous que 'restaurant_model.json' est accessible dans l'environnement Raindeer
 model.load_model("restaurant_model.json")
 
 # 4. Définir la structure des données pour la PRÉDICTION
@@ -58,7 +61,18 @@ class LogDataInput(RestaurantInput):
     fries_sold_real: int
 
 
+# --- ENDPOINT DE VÉRIFICATION D'UTILISATEUR (/verify_user) ---
+@app.get("/verify_user")
+def verify_user(user_id: str = Header(..., alias="X-User-ID"), is_authorized: bool = Depends(verify_user_is_authorized)):
+    """
+    Endpoint léger utilisé par le frontend pour vérifier si un X-User-ID est autorisé.
+    S'il n'est pas autorisé, verify_user_is_authorized lèvera une HTTPException 403.
+    """
+    return {"status": "authorized"}
+
+
 # --- ENDPOINT DE PRÉDICTION (/predict) ---
+# Cet endpoint peut rester public ou être protégé, selon vos besoins.
 @app.post("/predict")
 def predict_sales(data: RestaurantInput, user_id: str = Header(None, alias="X-User-ID")):
     
@@ -110,10 +124,15 @@ def predict_sales(data: RestaurantInput, user_id: str = Header(None, alias="X-Us
 
 # --- ENDPOINT DE JOURNALISATION DES DONNÉES RÉELLES (/log_data) ---
 @app.post("/log_data")
-def log_daily_data(data: LogDataInput, user_id: str = Header(..., alias="X-User-ID")):
+def log_daily_data(
+    data: LogDataInput, 
+    user_id: str = Header(..., alias="X-User-ID"),
+    # --- DÉPENDANCE DE SÉCURITÉ AJOUTÉE ---
+    is_authorized: bool = Depends(verify_user_is_authorized) 
+):
     
     if not user_id:
-        raise HTTPException(status_code=401, detail="L'utilisateur n'est pas authentifié (Header 'X-User-ID' manquant).")
+         raise HTTPException(status_code=401, detail="L'utilisateur n'est pas authentifié (Header 'X-User-ID' manquant).")
         
     try:
         conn = psycopg2.connect(**DB_CONFIG)
@@ -156,6 +175,3 @@ def log_daily_data(data: LogDataInput, user_id: str = Header(..., alias="X-User-
         raise HTTPException(status_code=500, detail=f"Erreur de Base de Données. Vérifiez le mot de passe DB et la table 'predictions': {e}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur Interne du Serveur: {e}")
-
-
-
