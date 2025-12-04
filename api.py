@@ -116,9 +116,6 @@ def predict_sales(data: RestaurantInput, user_id: str = Header(None, alias="X-Us
 def log_daily_data(
     data: LogDataInput, 
     user_id: str = Header(..., alias="X-User-ID"),
-    # --- DÉPENDANCE DE SÉCURITÉ AJOUTÉE ---
-    is_authorized: bool = Depends(verify_user_is_authorized) 
-):
     
     if not user_id:
          raise HTTPException(status_code=401, detail="L'utilisateur n'est pas authentifié (Header 'X-User-ID' manquant).")
@@ -164,4 +161,5 @@ def log_daily_data(
         raise HTTPException(status_code=500, detail=f"Erreur de Base de Données. Vérifiez le mot de passe DB et la table 'predictions': {e}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur Interne du Serveur: {e}")
+
 
