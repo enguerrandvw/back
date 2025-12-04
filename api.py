@@ -8,7 +8,7 @@ import json
 from datetime import date 
 import psycopg2 
 # --- NOUVELLE IMPORTATION ---
-from auth import verify_user_is_authorized
+
 
 app = FastAPI()
 
@@ -59,17 +59,6 @@ class LogDataInput(RestaurantInput):
     chicken_sold_real: int
     salad_sold_real: int
     fries_sold_real: int
-
-
-# --- ENDPOINT DE VÉRIFICATION D'UTILISATEUR (/verify_user) ---
-@app.get("/verify_user")
-def verify_user(user_id: str = Header(..., alias="X-User-ID"), is_authorized: bool = Depends(verify_user_is_authorized)):
-    """
-    Endpoint léger utilisé par le frontend pour vérifier si un X-User-ID est autorisé.
-    S'il n'est pas autorisé, verify_user_is_authorized lèvera une HTTPException 403.
-    """
-    return {"status": "authorized"}
-
 
 # --- ENDPOINT DE PRÉDICTION (/predict) ---
 # Cet endpoint peut rester public ou être protégé, selon vos besoins.
@@ -175,3 +164,4 @@ def log_daily_data(
         raise HTTPException(status_code=500, detail=f"Erreur de Base de Données. Vérifiez le mot de passe DB et la table 'predictions': {e}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur Interne du Serveur: {e}")
+
